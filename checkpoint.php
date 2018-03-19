@@ -1,17 +1,4 @@
-<!DOCTYPE html>
-<html lang="">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Title Page</title>
-
-    <!-- Bootstrap CSS -->
-    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous"> -->
-    <link rel="stylesheet" type="text/css" href="medium.css" />
-    <link rel="stylesheet" href="restable.css?<?php echo '?ver=' . filemtime('restable.css'); ?>" type="text/css" media="screen, projection" />
-
-  </head>
+<?php require 'header.php'; ?>
   <body>
   <br>
 <?php
@@ -22,7 +9,8 @@ if (((isset($_POST['authen_submit'])) && ($authenPass == '7852899')) ||
   echo '<div id="authen_panel">
   <form method="POST" name="checkPoint_form">
   <h3>CustomerID</h3>
-			<input type="number" name="customerid">
+    <label id="customerid-error" class="error" for="customerid"></label><br>
+		<input type="number" id="customerid" name="customerid" placeholder="ระบุรหัสบัตร" required>
 			<br>
 			<br>
 			<button type="submit" name="checkPoint_submit">checkpoint</button>
@@ -44,15 +32,17 @@ CONVERT(varchar, T_Customer.CustomerStartdate, 103) as CustomerStartdate,
 CONVERT(varchar, T_Customer.CustomerEnddate, 103) as CustomerEnddate
 FROM tcustomerlog_cal INNER JOIN
   T_Customer ON tcustomerlog_cal.customerid = T_Customer.CustomerID
-WHERE     (tcustomerlog_cal.customerid = '$customerID')
+WHERE     (tcustomerlog_cal.customerid = ?)
 GROUP BY tcustomerlog_cal.customerid, T_Customer.CustomerName, T_Customer.CustomerLast, T_Customer.CustomerStartdate, T_Customer.CustomerEnddate ";
 // echo $queryPoint;
 
 // $stmt = $conn->query( $queryPoint );
-$stmt = $conn->prepare( $queryPoint, array(PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL));  
+$stmt = $conn->prepare( $queryPoint, array(PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL));
+$stmt->bindParam(1, $customerID,PDO::PARAM_STR);
 $stmt->execute();  
 $pointRowCount = $stmt->rowCount();
 // var_dump($pointRowCount);
+
 if ($pointRowCount != 0) {
 
   echo '<h3>ข้อมูลบัตรสมาชิก</h3>
@@ -83,9 +73,16 @@ echo '</table>
 $queryLog =" SELECT  CONVERT(varchar, scprogramdate, 103) as scprogramdate,
 outletcode, addpoint, delpoint, scinvoice, totalcharge
 FROM tcustomerlog_cal
-WHERE (customerid = '$customerID') ";
+WHERE (customerid = ?) ";
 
-$stmt = $conn->query( $queryLog ); 
+// $stmt = $conn->query( $queryLog );
+$stmt = $conn->prepare( $queryLog );
+$stmt->bindParam(1, $customerID,PDO::PARAM_STR);
+$stmt->execute();
+$logRowCount = $stmt->rowCount();
+
+if($logRowCount != 0) {
+
 echo '<h3>ข้อมูลการใช้บัตรสมาชิก</h3>
 <table class="rwd-table">
 <tr>
@@ -109,6 +106,11 @@ while ( $row = $stmt->fetch( PDO::FETCH_ASSOC ) ){
 } 
 echo '</table>';
 
+}
+else{
+  echo 'ไม่พบข้อมูลการใช้บัตรสมาชิก';
+}
+
 }else{
   echo 'ไม่พบข้อมูล';
 }
@@ -121,13 +123,4 @@ echo '</table>';
 
 </table>
 </body>
-<footer>
-    <!-- jQuery -->
-    <script src="//code.jquery.com/jquery.js"></script>
-    <!-- Add respond.js for responsive table-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
-
-    <!-- Bootstrap JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-  </footer>
-</html>
+<?php require 'footer.php'; ?>

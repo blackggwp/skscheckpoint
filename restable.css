@@ -89,3 +89,9 @@ h1 {
 .rwd-table th, .rwd-table td:before {
   color: #dd5;
 }
+
+/* my css */
+.error{
+  color: red;
+  font-size: 0.8em;
+}
