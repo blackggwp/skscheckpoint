@@ -33,7 +33,8 @@ CONVERT(varchar, T_Customer.CustomerEnddate, 103) as CustomerEnddate
 FROM tcustomerlog_cal INNER JOIN
   T_Customer ON tcustomerlog_cal.customerid = T_Customer.CustomerID
 WHERE     (tcustomerlog_cal.customerid = ?)
-GROUP BY tcustomerlog_cal.customerid, T_Customer.CustomerName, T_Customer.CustomerLast, T_Customer.CustomerStartdate, T_Customer.CustomerEnddate ";
+GROUP BY tcustomerlog_cal.customerid, T_Customer.CustomerName, 
+T_Customer.CustomerLast, T_Customer.CustomerStartdate, T_Customer.CustomerEnddate ";
 // echo $queryPoint;
 
 // $stmt = $conn->query( $queryPoint );
@@ -73,8 +74,9 @@ echo '</table>
 $queryLog =" SELECT  CONVERT(varchar, scprogramdate, 103) as scprogramdate,
 outletcode, addpoint, delpoint, scinvoice, totalcharge
 FROM tcustomerlog_cal
-WHERE (customerid = ?) ";
-
+WHERE (customerid = ?) 
+ORDER BY convert(datetime, scprogramdate, 103) ASC ";
+// echo $queryLog;
 // $stmt = $conn->query( $queryLog );
 $stmt = $conn->prepare( $queryLog );
 $stmt->bindParam(1, $customerID,PDO::PARAM_STR);
@@ -101,7 +103,7 @@ while ( $row = $stmt->fetch( PDO::FETCH_ASSOC ) ){
    print_r( "<td data-th=\"AddPoint\" class=\"td__textlong\">".$row['addpoint'] ."</td>" );
    print_r( "<td data-th=\"DelPoint\" class=\"td__textlong\">".$row['delpoint'] ."</td>" );
    print_r( "<td data-th=\"Inv\" class=\"td__textlong\">".$row['scinvoice'] ."</td>" );
-   print_r( "<td data-th=\"TotalCharge\" class=\"td__textlong\">".$row['totalcharge'] ."</td>" );
+   print_r( "<td data-th=\"Total\" class=\"td__textlong\">".$row['totalcharge'] ."</td>" );
    echo "</tr>";
 } 
 echo '</table>';
