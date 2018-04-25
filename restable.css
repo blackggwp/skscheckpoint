@@ -95,3 +95,15 @@ h1 {
   color: red;
   font-size: 0.8em;
 }
+.back_btn {
+  background-color: #9a3c3c;
+  text-align: center;
+  cursor: pointer;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+  font-size: 2.2em;
+  padding: 0px 0.5em 0px 0.5em;
+  text-decoration: none;
+  margin-left: 40px;
+}
