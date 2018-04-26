@@ -11,7 +11,7 @@ if (isset($_POST['authen_submit'])) {
   $authenPass = $_POST['authen_password'];
   $queryUser = " SELECT nUserID, outletcode, expid, expdate, strUserName, position, typeuser, isManager, levelCode, emppassword
   FROM  imp_emp2
-  WHERE (nUserID = ?) AND (emppassword = ?) AND (levelCode = 9) ";
+  WHERE (nUserID = ?) AND (emppassword = ?) AND ((levelCode = 9) OR (position = 'Operation')) ";
 // echo $queryPoint;
 // $stmt = $conn->query( $queryPoint );
 $stmt = $conn->prepare( $queryUser, array(PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL));
@@ -44,7 +44,9 @@ if ($userRowCount != 0) {
 			<button type="submit" name="checkPoint_submit">checkpoint</button>
 		</form>
 		</div>
-		<br>';
+    <br>
+    <input action="action" onclick="window.history.go(-1); return false;" type="button" value="Logout" />
+    ';
 }else{
   echo 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง';
   echo '<br>';
@@ -172,12 +174,12 @@ echo '</table>';
 
 }
 else{
-  echo 'ไม่พบข้อมูลการใช้บัตรสมาชิก';
+  echo 'ไม่พบข้อมูลการใช้บัตรสมาชิก<br>';
   echo '<input action="action" onclick="window.history.go(-1); return false;" type="button" value="Back" />';
 }
 
 }else{
-  echo 'ไม่พบข้อมูล';
+  echo 'ไม่พบข้อมูล<br>';
   echo '<input action="action" onclick="window.history.go(-1); return false;" type="button" value="Back" />';
 }
 }
